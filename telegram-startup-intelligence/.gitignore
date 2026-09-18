@@ -1,0 +1,24 @@
+# Collected data and generated analysis are reproducible - regenerate, don't commit.
+data/raw/*.jsonl
+data/processed/*.jsonl
+data/processed/*.json
+data/processed/.llm_cache/
+data/insights/*.jsonl
+database/*.sqlite
+database/*.sqlite-wal
+database/*.sqlite-shm
+
+# Generated reports for a real channel. The synthetic demo run under
+# output/_demo_synthetic/ IS committed, as a worked example.
+output/*.md
+
+# Secrets
+.env
+*.session
+*.session-journal
+
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/

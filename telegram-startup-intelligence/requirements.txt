@@ -1,0 +1,17 @@
+# Core pipeline (scraper + parser + storage + reports) - this is all you need
+# to collect a channel and build the database.
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=5.0.0
+
+# Optional: full-history collection through the official Telegram API.
+# Only needed if the public web preview does not reach far enough back.
+# telethon>=1.34.0
+
+# No LLM SDK is required. The provider layer speaks the OpenAI-compatible
+# REST API over plain `requests`, so any compatible endpoint works without a
+# vendor library. Embeddings fall back to a local hashed vectoriser when no
+# API key is configured.
+
+# Optional, for running the test suite with pytest instead of plain python:
+# pytest>=8.0.0
