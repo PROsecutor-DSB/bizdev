@@ -129,6 +129,16 @@ python query.py "What mistakes do founders make before building an MVP?"
 python query.py "An AI agent that negotiates B2B purchases" --critique
 ```
 
+## When did what run?
+
+The markdown files carry no timestamp, so that re-rendering unchanged data does not
+dirty every file. The timing lives in the database:
+
+```bash
+make when                        # latest run per stage, with engine and counts
+python -m src.reports.runs --all # full history
+```
+
 ## Cost control
 
 - Classification runs on every thread; extraction only on threads above `--min-score`.

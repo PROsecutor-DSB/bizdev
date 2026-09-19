@@ -34,6 +34,7 @@ from src.db import store  # noqa: E402
 from src.deduplicator.cluster import cosine  # noqa: E402
 from src.llm import prompts  # noqa: E402
 from src.llm.provider import get_provider  # noqa: E402
+from src.utils import allow_broken_pipe  # noqa: E402
 
 FTS_CLEAN = re.compile(r"[^\w\s]", re.UNICODE)
 
@@ -230,6 +231,7 @@ def interactive(conn: Any, engine: str, k: int) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    allow_broken_pipe()
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("question", nargs="*", help="your question, or an idea to critique")
     ap.add_argument("--critique", action="store_true", help="treat the input as a startup idea and critique it")

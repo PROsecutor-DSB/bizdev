@@ -10,7 +10,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.config import OUTPUT_DIR, PROCESSED_DIR, SCRAPE  # noqa: E402
-from src.utils import load_jsonl, write_json  # noqa: E402
+from src.utils import allow_broken_pipe, load_jsonl, write_json  # noqa: E402
 
 
 def compute(channel: str) -> dict[str, Any]:
@@ -161,6 +161,7 @@ def render_markdown(s: dict[str, Any]) -> str:
 
 
 def main(argv: list[str] | None = None) -> int:
+    allow_broken_pipe()
     ap = argparse.ArgumentParser()
     ap.add_argument("--channel", default=SCRAPE.channel)
     args = ap.parse_args(argv)

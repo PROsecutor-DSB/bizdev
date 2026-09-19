@@ -21,6 +21,21 @@ WS_RE = re.compile(r"[ \t ]+")
 MULTINEWLINE_RE = re.compile(r"\n{3,}")
 
 
+def allow_broken_pipe() -> None:
+    """Make a CLI survive `| head`.
+
+    Python installs a SIGPIPE handler that turns a closed downstream pipe into a
+    BrokenPipeError traceback. Restoring the default handler makes these tools
+    behave like every other unix command.
+    """
+    try:
+        import signal
+
+        signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    except (ImportError, AttributeError, ValueError):
+        pass  # not POSIX, or not on the main thread - callers still work
+
+
 def utcnow_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 

@@ -254,6 +254,18 @@ Re-render any report at any time with `python -m src.reports.render`. Every deri
 stores `source_posts`, `engine` and `prompt_version`, so in six months you can tell which
 model wrote what, under which prompt.
 
+The reports carry **no generation timestamp**. Re-rendering unchanged data would
+otherwise produce a diff in all ten files every time, which buries real changes in
+review. When each stage last ran — with its engine, parameters and result counts — is in
+the `runs` table:
+
+```bash
+make when                      # latest run per stage
+python -m src.reports.runs --all
+```
+
+Rendering the same database twice now produces byte-identical files.
+
 ### 15. Retrieval for `query.py` is hybrid and local
 
 FTS5 lexical matching plus embedding cosine, merged by reciprocal-rank-ish scoring. The
@@ -312,6 +324,7 @@ telegram-startup-intelligence/
                            opportunities, tech×job, ideas, hidden gems
     reports/render.py      every markdown file
     reports/dataset_stats.py
+    reports/runs.py        when each stage last ran
     llm/provider.py        OpenAI-compatible + offline heuristic engine
     llm/prompts.py         all prompts, versioned
     llm/heuristic.py       the deterministic rule engine

@@ -19,7 +19,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.config import OUTPUT_DIR, SCRAPE, TAXONOMY  # noqa: E402
 from src.db import store  # noqa: E402
-from src.utils import utcnow_iso  # noqa: E402
 
 # Seed list from the brief, used only as a coverage checklist.
 SEED_ANTI_PATTERNS = [
@@ -77,11 +76,14 @@ def header(title: str, subtitle: str, meta: dict[str, Any]) -> str:
             "> Mechanisms and syntheses are placeholders. Set `LLM_API_KEY` and re-run\n"
             "> `python run_pipeline.py --stage all` for real analysis.\n"
         )
+    # No generation timestamp here on purpose: it would make every re-render a
+    # diff even when nothing changed. When each stage last ran is recorded in the
+    # `runs` table of the database - see `make when` or the README.
     return (
         f"# {title}\n\n{subtitle}\n{banner}\n"
         f"<sub>Channel: `@{meta.get('channel')}` · "
         f"posts {meta.get('posts', 0)} · insights {meta.get('insights', 0)} · "
-        f"generated {utcnow_iso()} · engines: {', '.join(sorted(set(engines))) or 'n/a'}</sub>\n\n"
+        f"engines: {', '.join(sorted(set(engines))) or 'n/a'}</sub>\n\n"
         "---\n"
     )
 
@@ -806,6 +808,7 @@ RENDERERS = {
 def run(channel: str = SCRAPE.channel, out_dir: Path = OUTPUT_DIR, only: list[str] | None = None) -> list[Path]:
     conn = store.connect()
     out_dir.mkdir(parents=True, exist_ok=True)
+    run_id = store.start_run(conn, "reports", "render", {"channel": channel, "out_dir": str(out_dir)})
     written: list[Path] = []
     for name, fn in RENDERERS.items():
         if only and name not in only:
@@ -819,6 +822,7 @@ def run(channel: str = SCRAPE.channel, out_dir: Path = OUTPUT_DIR, only: list[st
         p.write_text(text.rstrip() + "\n", encoding="utf-8")
         written.append(p)
         print(f"  wrote {p.relative_to(p.parent.parent)} ({len(text):,} chars)", file=sys.stderr)
+    store.finish_run(conn, run_id, {"files": [p.name for p in written]})
     conn.close()
     return written
 

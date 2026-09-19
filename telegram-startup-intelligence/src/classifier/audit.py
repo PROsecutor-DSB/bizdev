@@ -23,7 +23,7 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from src.config import OUTPUT_DIR, PROCESSED_DIR, SCRAPE  # noqa: E402
-from src.utils import load_jsonl, write_jsonl  # noqa: E402
+from src.utils import allow_broken_pipe, load_jsonl, write_jsonl  # noqa: E402
 
 SEED = 20260918
 
@@ -145,6 +145,7 @@ def score(channel: str) -> dict[str, Any]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    allow_broken_pipe()
     ap = argparse.ArgumentParser()
     ap.add_argument("action", choices=["sample", "score"])
     ap.add_argument("--channel", default=SCRAPE.channel)

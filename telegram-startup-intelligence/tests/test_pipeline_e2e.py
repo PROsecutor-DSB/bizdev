@@ -6,10 +6,11 @@ Asserts the invariants that make the output trustworthy:
   * every insight carries a resolvable Telegram permalink;
   * every derived (inferred) row is labelled DERIVED_HYPOTHESIS;
   * the heuristic engine never fabricates opportunities, ideas or answers;
-  * re-running is idempotent.
+  * re-running is idempotent, and re-rendering is byte-identical.
 """
 from __future__ import annotations
 
+import hashlib
 import subprocess
 import sys
 from pathlib import Path
@@ -107,11 +108,25 @@ def test_e2e() -> None:
     n_before = store.count(conn, "insights")
     conn.close()
 
+    def report_hashes() -> dict[str, str]:
+        return {
+            f.name: hashlib.sha256(f.read_bytes()).hexdigest()
+            for f in sorted(OUT.glob("*.md"))
+        }
+
+    before = report_hashes()
+
     # --- idempotency: a second full run changes nothing
     run_pipeline()
     conn = store.connect()
     assert store.count(conn, "insights") == n_before, "re-running must not duplicate insights"
     conn.close()
+
+    # --- reproducibility: identical data must render byte-identical files, so a
+    #     re-render never shows up as a diff (no timestamps in the output)
+    after = report_hashes()
+    changed = [name for name, h in before.items() if after.get(name) != h]
+    assert not changed, f"re-rendering unchanged data produced different bytes in: {changed}"
     print(f"e2e: {len(posts)} posts, {len(insights)} insights, "
           f"{store.connect().execute('SELECT COUNT(*) FROM patterns').fetchone()[0]} patterns: OK")
 

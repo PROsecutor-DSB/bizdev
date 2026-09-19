@@ -6,7 +6,7 @@ Mistakes the channel documents, with the reason they feel correct at the time 鈥
 > Mechanisms and syntheses are placeholders. Set `LLM_API_KEY` and re-run
 > `python run_pipeline.py --stage all` for real analysis.
 
-<sub>Channel: `@demo_channel` 路 posts 43 路 insights 16 路 generated 2026-09-19T22:20:07+00:00 路 engines: heuristic</sub>
+<sub>Channel: `@demo_channel` 路 posts 43 路 insights 16 路 engines: heuristic</sub>
 
 ---
 

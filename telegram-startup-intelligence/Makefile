@@ -2,7 +2,7 @@ CHANNEL ?= zamesin
 ENGINE  ?= auto
 MAX_POSTS ?=
 
-.PHONY: help install scrape mvp full stats classify audit reports query demo test clean-db
+.PHONY: help install scrape mvp full stats classify audit reports when query demo test clean-db
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "};{printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
@@ -32,6 +32,9 @@ full:  ## end-to-end on the whole available history
 
 reports:  ## regenerate the markdown reports from the database
 	python -m src.reports.render --channel $(CHANNEL)
+
+when:  ## show when each pipeline stage last ran
+	python -m src.reports.runs
 
 query:  ## interactive question answering
 	python query.py --channel $(CHANNEL)
