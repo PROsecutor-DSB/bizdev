@@ -6,7 +6,7 @@
 > Mechanisms and syntheses are placeholders. Set `LLM_API_KEY` and re-run
 > `python run_pipeline.py --stage all` for real analysis.
 
-<sub>Channel: `@demo_channel` · posts 43 · insights 16 · generated 2026-09-18T14:15:56+00:00 · engines: heuristic</sub>
+<sub>Channel: `@demo_channel` · posts 43 · insights 16 · generated 2026-09-19T22:20:07+00:00 · engines: heuristic</sub>
 
 ---
 
